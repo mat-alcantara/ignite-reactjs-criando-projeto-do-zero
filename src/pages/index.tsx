@@ -1,9 +1,12 @@
 import { GetStaticProps } from 'next';
 
+import Prismic from '@prismicio/client';
 import { getPrismicClient } from '../services/prismic';
 
 import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
+
+import { Header } from '../components/Header';
 
 interface Post {
   uid?: string;
@@ -24,13 +27,25 @@ interface HomeProps {
   postsPagination: PostPagination;
 }
 
-// export default function Home() {
-//   // TODO
-// }
+const Home: React.FC = () => {
+  // TODO
+  return (
+    <>
+      <Header />
+    </>
+  );
+};
 
-// export const getStaticProps = async () => {
-//   // const prismic = getPrismicClient();
-//   // const postsResponse = await prismic.query(TODO);
+export default Home;
 
-//   // TODO
-// };
+export const getStaticProps: GetStaticProps = async () => {
+  const prismic = getPrismicClient();
+  const postsResponse = await prismic.query(
+    [Prismic.Predicates.at('document.type', 'posts')],
+    { pageSize: 2 }
+  );
+
+  return {
+    props: { postsResponse },
+  };
+};

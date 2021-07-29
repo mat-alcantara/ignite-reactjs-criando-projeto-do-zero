@@ -1,1 +1,21 @@
-// TODO
+.container {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 3em 0;
+}
+
+.contentContainer {
+  display: flex;
+  align-items: center;
+}
+
+.headerTitle {
+  margin-left: 1em;
+  color: #f8f8f8;
+
+  span {
+    color: #f956b2;
+    margin-left: 0.25em;
+  }
+}
