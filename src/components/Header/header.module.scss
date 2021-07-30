@@ -1,13 +1,15 @@
 .container {
   width: 100%;
   max-width: 700px;
+  height: 7em;
+
   margin: 0 auto;
-  padding: 3em 0;
 }
 
 .contentContainer {
   display: flex;
   align-items: center;
+  height: 100%;
 }
 
 .headerTitle {

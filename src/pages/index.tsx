@@ -1,12 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { GetStaticProps } from 'next';
 
 import Prismic from '@prismicio/client';
+import { FiUser, FiCalendar } from 'react-icons/fi';
+import Link from 'next/link';
+import { useState } from 'react';
+import { useEffect } from 'react';
 import { getPrismicClient } from '../services/prismic';
 
 import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
-
-import { Header } from '../components/Header';
+import { formatDate } from '../utils/formatDate';
 
 interface Post {
   uid?: string;
@@ -27,12 +31,75 @@ interface HomeProps {
   postsPagination: PostPagination;
 }
 
-const Home: React.FC = () => {
-  // TODO
+const Home: React.FC<HomeProps> = ({ postsPagination }) => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [newPage, setNewPage] = useState<string | null>(null);
+
+  useEffect(() => {
+    setPosts(postsPagination.results);
+    setNewPage(postsPagination.next_page);
+  }, []);
+
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const handleLoadPosts = () => {
+    if (newPage) {
+      fetch(postsPagination.next_page)
+        .then(response => response.json())
+        .then(data => {
+          setNewPage(data.next_page);
+
+          data.results.forEach(response => {
+            setPosts(prevValue => [
+              ...prevValue,
+              {
+                uid: response.uid,
+                first_publication_date: formatDate(
+                  response.first_publication_date
+                ),
+                data: {
+                  title: response.data.title,
+                  subtitle: response.data.subtitle,
+                  author: response.data.author,
+                },
+              },
+            ]);
+          });
+        });
+    }
+  };
+
   return (
-    <>
-      <Header />
-    </>
+    <div className={styles.container}>
+      {posts.map(result => (
+        <div key={result.uid} className={styles.postContainer}>
+          <Link href={`/post/${result.uid}`}>
+            <a>
+              <h1>{result.data.title}</h1>
+            </a>
+          </Link>
+          <p>{result.data.subtitle}</p>
+          <div>
+            <span>
+              <FiCalendar color="#d7d7d7" size={15} />
+              {formatDate(result.first_publication_date)}
+            </span>
+            <span>
+              <FiUser color="#d7d7d7" size={15} />
+              {result.data.author}
+            </span>
+          </div>
+        </div>
+      ))}
+      {newPage && (
+        <button
+          onClick={() => handleLoadPosts()}
+          type="button"
+          className={styles.loadMore}
+        >
+          Carregar mais posts
+        </button>
+      )}
+    </div>
   );
 };
 
@@ -42,10 +109,26 @@ export const getStaticProps: GetStaticProps = async () => {
   const prismic = getPrismicClient();
   const postsResponse = await prismic.query(
     [Prismic.Predicates.at('document.type', 'posts')],
-    { pageSize: 2 }
+    { pageSize: 1 }
   );
 
+  const results = postsResponse.results.map(response => {
+    return {
+      uid: response.uid,
+      first_publication_date: response.first_publication_date,
+      data: {
+        title: response.data.title,
+        subtitle: response.data.subtitle,
+        author: response.data.author,
+      },
+    };
+  });
+
+  console.log(postsResponse);
+
   return {
-    props: { postsResponse },
+    props: {
+      postsPagination: { results, next_page: postsResponse.next_page },
+    },
   };
 };
