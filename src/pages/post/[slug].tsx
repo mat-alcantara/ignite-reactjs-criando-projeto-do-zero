@@ -5,6 +5,7 @@ import { RichText } from 'prismic-dom';
 import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
 
 import Prismic from '@prismicio/client';
+import { useRouter } from 'next/router';
 import { getPrismicClient } from '../../services/prismic';
 
 import commonStyles from '../../styles/common.module.scss';
@@ -34,6 +35,12 @@ interface PostProps {
 }
 
 const Post: React.FC<PostProps> = ({ post }) => {
+  const router = useRouter();
+
+  if (router.isFallback) {
+    return <div>Carregando...</div>;
+  }
+
   return (
     <>
       <img className={styles.banner} src={post.data.banner.url} alt="banner" />
@@ -49,12 +56,17 @@ const Post: React.FC<PostProps> = ({ post }) => {
             {post.data.author}
           </span>
           <span>
-            <FiClock color="#d7d7d7" size={15} />4 min
+            <FiClock color="#d7d7d7" size={15} />
+            {post.data.content.reduce((sumTotal, content) => {
+              const textTime = RichText.asText(content.body).split(' ').length;
+              return Math.ceil(sumTotal + textTime / 200);
+            }, 0)}{' '}
+            min
           </span>
         </div>
         <div className={styles.contentContainer}>
           {post.data.content.map(contentResponse => (
-            <div className={styles.content}>
+            <div className={styles.content} key={contentResponse.heading}>
               <h2>{contentResponse.heading}</h2>
               <div
                 dangerouslySetInnerHTML={{
