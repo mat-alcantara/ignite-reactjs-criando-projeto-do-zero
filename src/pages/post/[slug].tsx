@@ -3,6 +3,7 @@ import { RichText } from 'prismic-dom';
 
 import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
 
+import Prismic from '@prismicio/client';
 import { getPrismicClient } from '../../services/prismic';
 
 import commonStyles from '../../styles/common.module.scss';
@@ -48,7 +49,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
           </span>
           <span>
             <FiClock color="#d7d7d7" size={15} />
-            {/* {Math.ceil(RichText.asText(post.data.content).length / 200)}{' '} */}
+            {Math.ceil(RichText.asText(post.data.content).length / 200)}{' '}
             minuto(s)
           </span>
         </div>
@@ -60,12 +61,22 @@ const Post: React.FC<PostProps> = ({ post }) => {
 export default Post;
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  // const prismic = getPrismicClient();
-  // const posts = await prismic.query(TODO);
+  const prismic = getPrismicClient();
+  const posts = await prismic.query([
+    Prismic.Predicates.at('document.type', 'posts'),
+  ]);
+
+  const paths = posts.results.map(post => {
+    return {
+      params: {
+        slug: post.uid,
+      },
+    };
+  });
 
   return {
-    paths: [],
-    fallback: 'blocking',
+    paths,
+    fallback: true,
   };
 };
 
@@ -78,16 +89,18 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const post = {
     uid: response.uid,
     first_publication_date: response.first_publication_date,
+    last_publication_date: response.last_publication_date,
     data: {
       title: response.data.title,
+      subtitle: response.data.subtitle,
+      author: response.data.author,
       banner: {
         url: response.data.banner.url,
       },
-      author: response.data.author,
-      content: response.data.content.map(contentResponse => {
+      content: response.data.content.map(content => {
         return {
-          heading: contentResponse.heading,
-          body: RichText.asHtml(contentResponse.body),
+          heading: content.heading,
+          body: [...content.body],
         };
       }),
     },

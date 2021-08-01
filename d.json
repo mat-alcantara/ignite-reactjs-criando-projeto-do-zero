@@ -1,0 +1,200 @@
+{
+  "uid": "mapas-com-react-usando-leaflet",
+  "first_publication_date": "2021-07-29T11:44:59+0000",
+  "last_publication_date": "2021-07-29T11:44:59+0000",
+  "data": {
+    "title": "Mapas com React usando Leaflet",
+    "subtitle": "Neste post vamos desenvolver uma página web para demonstrar, na prática, a integração de Mapas em uma aplicação com React usando Leaflet.",
+    "author": "Thiago Marinho",
+    "banner": {
+      "url": "https://images.prismic.io/slicemachine-blank/26d81419-4d65-46b8-853e-8ea902e160c1_groovy.png?auto=compress,format"
+    },
+    "content": [
+      {
+        "heading": "👋 Introdução",
+        "body": [
+          {
+            "type": "paragraph",
+            "text": "Neste post vamos desenvolver uma página web para demonstrar, na prática, a integração de Mapas em uma aplicação com React usando Leaflet.",
+            "spans": [
+              {
+                "start": 129,
+                "end": 136,
+                "type": "hyperlink",
+                "data": {
+                  "link_type": "Web",
+                  "url": "https://react-leaflet.js.org/"
+                }
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "Alguns pontos que vamos abordar:",
+            "spans": []
+          },
+          { "type": "list-item", "text": "Geolocalização;", "spans": [] },
+          { "type": "list-item", "text": "Consumo de API;", "spans": [] },
+          {
+            "type": "list-item",
+            "text": "Input com Autocomplete usando React-Select;",
+            "spans": []
+          },
+          { "type": "list-item", "text": "Integração com Mapas;", "spans": [] },
+          {
+            "type": "list-item",
+            "text": "Estilização do Mapa e Marcadores.",
+            "spans": []
+          },
+          {
+            "type": "paragraph",
+            "text": "Leaflet é uma biblioteca JavaScript open-source para trabalhar com Mapas em aplicações web e mobile. Pode ser simplesmente integrada a um site usando apenas HTML, CSS e JavaScript.",
+            "spans": [
+              {
+                "start": 0,
+                "end": 7,
+                "type": "hyperlink",
+                "data": { "link_type": "Web", "url": "https://leafletjs.com/" }
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "Podemos também integrar a Leaflet ao React com a biblioteca React Leaflet, que tem suporte ao TypeScript sendo bastante simples de utilizar. Ambas serão utilizadas em nossa aplicação de demonstração.",
+            "spans": [
+              {
+                "start": 60,
+                "end": 73,
+                "type": "hyperlink",
+                "data": {
+                  "link_type": "Web",
+                  "url": "https://react-leaflet.js.org/"
+                }
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "Somando todas essas tecnologias e conceitos, no final deste post vamos ter desenvolvido o app Entregas. Vai ser assim:",
+            "spans": []
+          },
+          {
+            "type": "paragraph",
+            "text": "Conforme podemos observar na animação acima, quando o usuário digita o endereço, sugestões de locais semelhantes começam a aparecer no autocomplete. Quando algum endereço é selecionado, o pin aparece centralizado no mapa, mostrando a localidade escolhida.",
+            "spans": []
+          },
+          {
+            "type": "paragraph",
+            "text": "Quando o usuário envia o formulário, o pin 📍 é atualizado para um ícone de pacote 📦. Para acessar os dados da entrega basta clicar no ícone — esse é o fluxo completo :)",
+            "spans": []
+          }
+        ]
+      },
+      {
+        "heading": "📝 Pré-requisitos",
+        "body": [
+          {
+            "type": "paragraph",
+            "text": "Sempre queremos entregar a melhor experiência para nossa audiência.",
+            "spans": [
+              { "start": 0, "end": 67, "type": "em" },
+              { "start": 27, "end": 45, "type": "strong" }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "Para uma melhor experiência com a leitura, você precisa entender o básico de:",
+            "spans": []
+          },
+          {
+            "type": "list-item",
+            "text": "Como fazer requisições à API;",
+            "spans": [
+              {
+                "start": 0,
+                "end": 28,
+                "type": "hyperlink",
+                "data": {
+                  "link_type": "Web",
+                  "url": "https://www.youtube.com/watch?v=vYlz3SmNXQQ&ab_channel=Rocketseat"
+                }
+              }
+            ]
+          },
+          {
+            "type": "list-item",
+            "text": "React & TypeScript",
+            "spans": [
+              {
+                "start": 0,
+                "end": 5,
+                "type": "hyperlink",
+                "data": {
+                  "link_type": "Web",
+                  "url": "https://pt-br.reactjs.org/"
+                }
+              },
+              {
+                "start": 8,
+                "end": 18,
+                "type": "hyperlink",
+                "data": {
+                  "link_type": "Web",
+                  "url": "https://blog.rocketseat.com.br/typescript-vantagens-mitos-conceitos/"
+                }
+              }
+            ]
+          },
+          {
+            "type": "list-item",
+            "text": "CSS",
+            "spans": [
+              {
+                "start": 0,
+                "end": 3,
+                "type": "hyperlink",
+                "data": {
+                  "link_type": "Web",
+                  "url": "https://www.youtube.com/watch?v=R3S8DEzEn6s&ab_channel=Rocketseat"
+                }
+              }
+            ]
+          },
+          {
+            "type": "list-item",
+            "text": "NodeJS, Yarn ou Npm configurados e Create React App (CRA)",
+            "spans": [
+              {
+                "start": 0,
+                "end": 6,
+                "type": "hyperlink",
+                "data": { "link_type": "Web", "url": "https://nodejs.org/en/" }
+              },
+              {
+                "start": 8,
+                "end": 12,
+                "type": "hyperlink",
+                "data": { "link_type": "Web", "url": "https://yarnpkg.com/" }
+              },
+              {
+                "start": 16,
+                "end": 19,
+                "type": "hyperlink",
+                "data": { "link_type": "Web", "url": "https://www.npmjs.com/" }
+              },
+              {
+                "start": 35,
+                "end": 51,
+                "type": "hyperlink",
+                "data": {
+                  "link_type": "Web",
+                  "url": "https://create-react-app.dev/"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
