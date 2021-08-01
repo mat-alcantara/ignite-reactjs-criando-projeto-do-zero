@@ -10,3 +10,30 @@
   font-weight: 700;
   color: var(--title);
 }
+
+.contentContainer {
+  margin: 4rem auto;
+}
+
+.content {
+  margin-top: 2rem;
+  line-height: 1.5rem;
+  text-align: justify;
+
+  h2 {
+    margin-bottom: 1rem;
+  }
+
+  p + p {
+    margin-top: 1rem;
+  }
+
+  ul + p {
+    margin-top: 1rem;
+  }
+
+  ul {
+    margin-top: 1rem;
+    list-style-position: inside;
+  }
+}

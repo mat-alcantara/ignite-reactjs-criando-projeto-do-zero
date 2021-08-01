@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { RichText } from 'prismic-dom';
 
@@ -48,10 +49,20 @@ const Post: React.FC<PostProps> = ({ post }) => {
             {post.data.author}
           </span>
           <span>
-            <FiClock color="#d7d7d7" size={15} />
-            {Math.ceil(RichText.asText(post.data.content).length / 200)}{' '}
-            minuto(s)
+            <FiClock color="#d7d7d7" size={15} />4 min
           </span>
+        </div>
+        <div className={styles.contentContainer}>
+          {post.data.content.map(contentResponse => (
+            <div className={styles.content}>
+              <h2>{contentResponse.heading}</h2>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: RichText.asHtml(contentResponse.body),
+                }}
+              />
+            </div>
+          ))}
         </div>
       </div>
     </>
