@@ -1,1 +1,12 @@
-// TODO
+.banner {
+  width: 100%;
+  height: 25rem;
+  object-fit: cover;
+}
+
+.postTitle {
+  margin-top: 5rem;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--title);
+}

@@ -69,7 +69,7 @@ const Home: React.FC<HomeProps> = ({ postsPagination }) => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={commonStyles.container}>
       {posts.map(result => (
         <div key={result.uid} className={styles.postContainer}>
           <Link href={`/post/${result.uid}`}>
@@ -78,7 +78,7 @@ const Home: React.FC<HomeProps> = ({ postsPagination }) => {
             </a>
           </Link>
           <p>{result.data.subtitle}</p>
-          <div>
+          <div className={commonStyles.postInfoContainer}>
             <span>
               <FiCalendar color="#d7d7d7" size={15} />
               {formatDate(result.first_publication_date)}
@@ -123,8 +123,6 @@ export const getStaticProps: GetStaticProps = async () => {
       },
     };
   });
-
-  console.log(postsResponse);
 
   return {
     props: {
