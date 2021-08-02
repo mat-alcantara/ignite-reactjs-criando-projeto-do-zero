@@ -6,6 +6,7 @@ import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
 
 import Prismic from '@prismicio/client';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { getPrismicClient } from '../../services/prismic';
 
 import commonStyles from '../../styles/common.module.scss';
@@ -36,6 +37,21 @@ interface PostProps {
 
 const Post: React.FC<PostProps> = ({ post }) => {
   const router = useRouter();
+
+  useEffect(() => {
+    const script = document.createElement('script');
+    const anchor = document.getElementById('inject-comments-for-uterances');
+    script.setAttribute('src', 'https://utteranc.es/client.js');
+    script.setAttribute('crossorigin', 'anonymous');
+    script.async = true;
+    script.setAttribute(
+      'repo',
+      'mat-alcantara/ignite-reactjs-criando-projeto-do-zero'
+    );
+    script.setAttribute('issue-term', 'pathname');
+    script.setAttribute('theme', 'github-dark');
+    anchor.appendChild(script);
+  }, []);
 
   if (router.isFallback) {
     return <div>Carregando...</div>;
@@ -76,6 +92,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
             </div>
           ))}
         </div>
+        <div id="inject-comments-for-uterances" />
       </div>
     </>
   );
