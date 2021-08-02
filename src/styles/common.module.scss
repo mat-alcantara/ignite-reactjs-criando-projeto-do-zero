@@ -21,3 +21,16 @@
     line-height: 1rem;
   }
 }
+
+.preview {
+  width: 100%;
+  max-width: 700px;
+  margin: 4rem auto;
+
+  text-align: center;
+  background: var(--white);
+  color: #000;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 1rem;
+}

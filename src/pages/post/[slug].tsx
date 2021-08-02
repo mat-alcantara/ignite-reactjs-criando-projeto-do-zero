@@ -2,6 +2,8 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { RichText } from 'prismic-dom';
 
+import Link from 'next/link';
+
 import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
 
 import Prismic from '@prismicio/client';
@@ -33,9 +35,10 @@ interface Post {
 
 interface PostProps {
   post: Post;
+  preview: boolean;
 }
 
-const Post: React.FC<PostProps> = ({ post }) => {
+const Post: React.FC<PostProps> = ({ post, preview }) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -93,6 +96,13 @@ const Post: React.FC<PostProps> = ({ post }) => {
           ))}
         </div>
         <div id="inject-comments-for-uterances" />
+        {preview && (
+          <aside className={commonStyles.preview}>
+            <Link href="/api/exit-preview">
+              <a>Sair do modo Preview</a>
+            </Link>
+          </aside>
+        )}
       </div>
     </>
   );
@@ -120,11 +130,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps<PostProps> = async ({
+  params,
+  preview = false,
+  previewData,
+}) => {
   const { slug } = params;
 
   const prismic = getPrismicClient();
-  const response = await prismic.getByUID('posts', String(slug), {});
+  const response = await prismic.getByUID('posts', String(slug), {
+    ref: previewData?.ref ?? null,
+  });
 
   const post = {
     uid: response.uid,
@@ -149,6 +165,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   return {
     props: {
       post,
+      preview,
     },
     revalidate: 1,
   };
