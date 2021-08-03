@@ -9,6 +9,8 @@ import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
 import Prismic from '@prismicio/client';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import { getPrismicClient } from '../../services/prismic';
 
 import commonStyles from '../../styles/common.module.scss';
@@ -38,9 +40,16 @@ interface PostProps {
   preview: boolean;
   prevPost: Post | undefined;
   nextPost: Post | undefined;
+  wasEdited: boolean;
 }
 
-const Post: React.FC<PostProps> = ({ post, preview, nextPost, prevPost }) => {
+const Post: React.FC<PostProps> = ({
+  post,
+  preview,
+  nextPost,
+  prevPost,
+  wasEdited,
+}) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -85,6 +94,23 @@ const Post: React.FC<PostProps> = ({ post, preview, nextPost, prevPost }) => {
             min
           </span>
         </div>
+        {wasEdited && (
+          <section className={commonStyles.info}>
+            <div>
+              <span>
+                * editado em{' '}
+                {format(
+                  new Date(post.first_publication_date),
+                  "dd MMM yyyy, 'às' HH:mm:ss",
+                  {
+                    locale: ptBR,
+                  }
+                )}
+              </span>
+            </div>
+          </section>
+        )}
+
         <div className={styles.contentContainer}>
           {post.data.content.map(contentResponse => (
             <div className={styles.content} key={contentResponse.heading}>
@@ -184,6 +210,9 @@ export const getStaticProps: GetStaticProps = async ({
     }
   );
 
+  const wasEdited =
+    response.last_publication_date > response.first_publication_date;
+
   const post = {
     uid: response.uid,
     first_publication_date: response.first_publication_date,
@@ -210,6 +239,7 @@ export const getStaticProps: GetStaticProps = async ({
       preview,
       prevPost: prevPost?.results[0] || null,
       nextPost: nextPost?.results[0] || null,
+      wasEdited,
     },
     revalidate: 1,
   };
